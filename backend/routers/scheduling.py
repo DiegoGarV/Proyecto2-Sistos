@@ -1,8 +1,9 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from models.process import Process
 from utils.file_loader import load_processes_from_file
 from core.scheduler.fifo import simulate_fifo
 from core.scheduler.sjf import simulate_sjf
+from core.scheduler.srt import simulate_srt
 from fastapi import UploadFile, File
 from typing import List
 import tempfile
@@ -44,5 +45,14 @@ def run_sjf():
         return {"error": "No hay procesos cargados."}
 
     result = simulate_sjf(stored_processes)
+    return result
+
+@router.get("/simulation-a/srt")
+def run_srt():
+    global stored_processes
+    if not stored_processes:
+        raise HTTPException(status_code=400, detail="No hay procesos cargados.")
+    
+    result = simulate_srt(stored_processes)
     return result
 
