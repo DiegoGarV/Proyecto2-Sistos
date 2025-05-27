@@ -2,6 +2,7 @@ from fastapi import APIRouter
 from models.process import Process
 from utils.file_loader import load_processes_from_file
 from core.scheduler.fifo import simulate_fifo
+from core.scheduler.sjf import simulate_sjf
 from fastapi import UploadFile, File
 from typing import List
 import tempfile
@@ -36,3 +37,12 @@ def run_fifo():
     
     result = simulate_fifo(stored_processes)
     return result
+
+@router.get("/simulation-a/sjf")
+def run_sjf():
+    if not stored_processes:
+        return {"error": "No hay procesos cargados."}
+
+    result = simulate_sjf(stored_processes)
+    return result
+
