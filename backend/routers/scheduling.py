@@ -5,6 +5,7 @@ from core.scheduler.fifo import simulate_fifo
 from core.scheduler.sjf import simulate_sjf
 from core.scheduler.srt import simulate_srt
 from core.scheduler.round_robin import simulate_round_robin
+from core.scheduler.priority import simulate_priority
 from fastapi import UploadFile, File
 from typing import List
 import tempfile
@@ -63,5 +64,13 @@ def run_round_robin(quantum: int = Query(..., gt=0, description="Quantum debe se
         raise HTTPException(status_code=400, detail="No hay procesos cargados.")
     
     result = simulate_round_robin(stored_processes, quantum)
+    return result
+
+@router.get("/simulation-a/priority")
+def run_priority():
+    if not stored_processes:
+        raise HTTPException(status_code=400, detail="No hay procesos cargados.")
+    
+    result = simulate_priority(stored_processes)
     return result
 
