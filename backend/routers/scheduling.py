@@ -1,9 +1,10 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Query
 from models.process import Process
 from utils.file_loader import load_processes_from_file
 from core.scheduler.fifo import simulate_fifo
 from core.scheduler.sjf import simulate_sjf
 from core.scheduler.srt import simulate_srt
+from core.scheduler.round_robin import simulate_round_robin
 from fastapi import UploadFile, File
 from typing import List
 import tempfile
@@ -34,7 +35,7 @@ async def upload_processes(file: UploadFile = File(...)):
 @router.get("/simulation-a/fifo")
 def run_fifo():
     if not stored_processes:
-        return {"error": "No hay procesos cargados."}
+        raise HTTPException(status_code=400, detail="No hay procesos cargados.")
     
     result = simulate_fifo(stored_processes)
     return result
@@ -42,7 +43,7 @@ def run_fifo():
 @router.get("/simulation-a/sjf")
 def run_sjf():
     if not stored_processes:
-        return {"error": "No hay procesos cargados."}
+        raise HTTPException(status_code=400, detail="No hay procesos cargados.")
 
     result = simulate_sjf(stored_processes)
     return result
@@ -54,5 +55,13 @@ def run_srt():
         raise HTTPException(status_code=400, detail="No hay procesos cargados.")
     
     result = simulate_srt(stored_processes)
+    return result
+
+@router.get("/simulation-a/round_robin")
+def run_round_robin(quantum: int = Query(..., gt=0, description="Quantum debe ser mayor a 0")):
+    if not stored_processes:
+        raise HTTPException(status_code=400, detail="No hay procesos cargados.")
+    
+    result = simulate_round_robin(stored_processes, quantum)
     return result
 
