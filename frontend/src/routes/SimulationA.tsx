@@ -11,6 +11,7 @@ const SimulationA = () => {
   const [quantum, setQuantum] = useState(5);
   const [uploadResult, setUploadResult] = useState<{ success: boolean; message: string; content?: string } | null>(null);
   const [results, setResults] = useState<{ algorithm: string, average: number, quantum?: number }[]>([]);
+  const [uploadResetCounter, setUploadResetCounter] = useState(0);
 
   useEffect(() => {
     const fetchStoredProcesses = async () => {
@@ -56,6 +57,11 @@ const SimulationA = () => {
       const data = await res.json();
       if (data.success) {
         setUploadResult({ success: true, message: "", content: "Procesos eliminados" });
+        setSelectedAlgorithm(null);
+        setQuantum(5);
+        setResults([]);
+        setFileUploaded(false);
+        setUploadResetCounter(prev => prev + 1);
       } else {
         setUploadResult({ success: false, message: "Error al limpiar procesos." });
       }
@@ -95,7 +101,7 @@ const SimulationA = () => {
             <img src={cleanIcon} alt="Limpiar" className={styles.icon} />
           </button>
         </div>
-        <FileUpload onFileUpload={handleFileUpload} />
+        <FileUpload onFileUpload={handleFileUpload} resetSignal={uploadResetCounter}/>
       </div>
 
       <div className={styles.uploadStatusBox}>

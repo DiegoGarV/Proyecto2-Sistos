@@ -1,15 +1,22 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import styles from "./FileUpload.module.css";
 import uploadIcon from "../assets/upload.png";
 
 interface FileUploadProps {
   onFileUpload: (file: File, result: { success: boolean; message: string; content?: string }) => void;
+  resetSignal?: number;
 }
 
-const FileUpload: React.FC<FileUploadProps> = ({ onFileUpload }) => {
+const FileUpload: React.FC<FileUploadProps> = ({ onFileUpload, resetSignal }) => {
   const [loading, setLoading] = useState(false);
   const [_message, setMessage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null); // nueva referencia
+
+  useEffect(() => {
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ""; // resetear el input
+    }
+  }, [resetSignal]);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -79,3 +86,5 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFileUpload }) => {
 };
 
 export default FileUpload;
+
+// Empecemos primero por el backend. Para hacer los endpoints de esta simulación vamos a usar el archivo de sync.py. También tengo mi carpeta sync_mech donde voy a poner la funcionalidad de los mecanismos de sincronización. Y también tengo el file_loader.py donde tengo la función para cargar los procesos, pero tambien haz la que cargue los otros archivos de texto. 
