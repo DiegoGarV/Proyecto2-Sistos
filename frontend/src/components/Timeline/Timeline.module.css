@@ -5,3 +5,26 @@
   gap: 24px;
   width: 100%;
 }
+
+.controls {
+  display: flex;
+  gap: 20px;
+  font-size: 2rem;
+}
+
+.controlText {
+  cursor: pointer;
+  transition: transform 0.15s ease, color 0.2s ease;
+  user-select: none;
+}
+
+.controlText:hover {
+  transform: scale(0.9);
+}
+
+.active {
+  background-color: #d4f8d4; /* verde claro */
+  border-radius: 8px;
+  padding: 1px 1px;
+  box-shadow: 0 0 5px #2ecc71;
+}

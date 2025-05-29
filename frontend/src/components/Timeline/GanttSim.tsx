@@ -4,33 +4,37 @@ import styles from "./GanttSim.module.css";
 interface GanttSimProps {
   algorithm: string;
   isPlaying: boolean;
+  simulationData: Block[];
 }
 
 interface Block {
-  id: number;
   label: string;
-  duration: number; // en segundos para la demo
+  start: number;
+  duration: number;
   color: string;
 }
 
-const mockBlocks: Block[] = [
-  { id: 1, label: "P1", duration: 3, color: "#007bff" },
-  { id: 2, label: "P2", duration: 2, color: "#28a745" },
-  { id: 3, label: "P3", duration: 1, color: "#ffc107" },
-];
-
-const GanttSim: React.FC<GanttSimProps> = ({ algorithm, isPlaying }) => {
-  const [progress, setProgress] = useState(0);
+const GanttSim: React.FC<GanttSimProps> = ({ isPlaying, simulationData }) => {
+  const [cycle, setCycle] = useState(0);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
+  const maxCycle = Math.max(...simulationData.map(b => b.start + b.duration), 0);
+  const labels = Array.from(new Set(simulationData.map(b => b.label)));
+
+  // Actualizar el ciclo si está reproduciendo
   useEffect(() => {
     if (isPlaying && intervalRef.current === null) {
       intervalRef.current = setInterval(() => {
-        setProgress((prev) => prev + 1);
-      }, 1000);
-    } else if (!isPlaying && intervalRef.current !== null) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
+        setCycle(prev => {
+          if (prev + 1 >= maxCycle) {
+            clearInterval(intervalRef.current!);
+            intervalRef.current = null;
+            return maxCycle;
+          }
+          return prev + 1;
+        });
+      }, 10);
     }
 
     return () => {
@@ -39,28 +43,53 @@ const GanttSim: React.FC<GanttSimProps> = ({ algorithm, isPlaying }) => {
         intervalRef.current = null;
       }
     };
-  }, [isPlaying]);
+  }, [isPlaying, maxCycle]);
+
+  useEffect(() => {
+    if (containerRef.current) {
+      containerRef.current.scrollLeft = cycle * 40;
+    }
+  }, [cycle]);
 
   return (
     <div className={styles.ganttWrapper}>
-      <h3>{algorithm}</h3>
-      <div className={styles.timeline}>
-        {mockBlocks.map((block, _index) => (
-          <div
-            key={block.id}
-            className={styles.block}
-            style={{
-              width: `${block.duration * 80}px`,
-              backgroundColor: block.color,
-            }}
-          >
-            {block.label}
+      <div className={styles.timelineContainer} ref={containerRef}>
+        <div className={styles.grid}>
+          {/* Encabezado de ciclos */}
+          <div className={styles.row}>
+            {Array.from({ length: maxCycle }).map((_, i) => (
+              <div key={`head-${i}`} className={styles.headerCell}>
+                {i}
+              </div>
+            ))}
           </div>
-        ))}
-        <div
-          className={styles.indicator}
-          style={{ left: `${progress * 80}px` }}
-        />
+
+          {/* Fila por proceso */}
+          {labels.map((label) => (
+            <div key={label} className={styles.row}>
+              {Array.from({ length: maxCycle }).map((_, i) => {
+                const block = simulationData.find(
+                  b => b.label === label && b.start <= i && i < b.start + b.duration
+                );
+
+                const showBlock = block && i < cycle;
+
+                return (
+                  <div
+                    key={`${label}-${i}`}
+                    className={styles.cell}
+                    style={{
+                      backgroundColor: showBlock ? block!.color : "transparent",
+                      color: showBlock ? "white" : "black",
+                    }}
+                  >
+                    {showBlock && i === block!.start ? label : ""}
+                  </div>
+                );
+              })}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

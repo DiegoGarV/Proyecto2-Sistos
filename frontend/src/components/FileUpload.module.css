@@ -1,0 +1,46 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.uploadBtn {
+  background-color: #0055ff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.uploadBtn:hover {
+  background-color: #0041cc;
+}
+
+.uploadBtn:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.message {
+  margin-top: 10px;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+.success {
+  color: green;
+}
+
+.error {
+  color: red;
+}
+
+.icon {
+  max-width: 20px;
+  max-height: 20px;
+  object-fit: contain;
+  margin-left: 5px;
+}

@@ -12,7 +12,7 @@ import tempfile
 
 router = APIRouter()
 
-stored_processes: List[Process] = [] # memoria temporal para pruebas
+stored_processes: List[Process] = [] # memoria
 
 @router.post("/simulation-a/upload-processes")
 async def upload_processes(file: UploadFile = File(...)):
@@ -74,3 +74,17 @@ def run_priority():
     result = simulate_priority(stored_processes)
     return result
 
+@router.post("/simulation-a/clean-processes")
+def clean_processes():
+    global stored_processes
+    stored_processes.clear()
+    return {"success": True, "message": "Procesos eliminados correctamente"}
+
+@router.get("/simulation-a/stored-processes")
+def get_stored_processes():
+    global stored_processes
+    return {
+        "processes": [vars(p) for p in stored_processes],
+        "success": bool(stored_processes),
+        "message": "Procesos cargados desde memoria" if stored_processes else "No hay procesos"
+    }

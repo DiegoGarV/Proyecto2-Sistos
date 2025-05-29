@@ -1,42 +1,36 @@
 .ganttWrapper {
-  margin-bottom: 40px;
   width: 100%;
+  margin-bottom: 20px;
 }
 
-.timeline {
-  position: relative;
-  display: flex;
-  align-items: center;
-  height: 60px;
-  background-color: #f1f1f1;
+.timelineContainer {
   overflow-x: auto;
+  border: 1px solid #ccc;
   border-radius: 8px;
-  padding: 10px;
 }
 
-.block {
+.grid {
+  display: flex;
+  flex-direction: column;
+  min-width: max-content;
+}
+
+.row {
+  display: flex;
+  color: #000000;
+}
+
+.cell, .headerCell {
+  width: 40px;
   height: 40px;
+  border: 1px solid #ddd;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  font-size: 12px;
+}
+
+.headerCell {
+  background-color: #f2f2f2;
   font-weight: bold;
-  margin-right: 8px;
-  border-radius: 6px;
-  min-width: 60px;
-}
-
-.indicator {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 3px;
-  background-color: red;
-  animation: blink 1s steps(1, start) infinite;
-}
-
-@keyframes blink {
-  50% {
-    opacity: 0;
-  }
 }
