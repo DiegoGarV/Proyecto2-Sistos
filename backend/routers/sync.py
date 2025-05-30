@@ -1,9 +1,10 @@
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, UploadFile, File
 from models.process import Process
 from models.resource import Resource
 from models.action import Action
 from utils.file_loader import load_processes_from_file, load_resources_from_file, load_actions_from_file
-from fastapi import UploadFile, File
+from core.sync_mech.mutex_locks import MutexSimulator
+from core.sync_mech.semaphore import SemaphoreSimulator
 from typing import List
 import tempfile
 
@@ -68,3 +69,29 @@ async def upload_actions(file: UploadFile = File(...)):
         }
     except Exception as e:
         return {"error": str(e)}
+    
+@router.post("/simulation-b/run-mutex")
+async def run_mutex_simulation():
+    if not stored_processes or not stored_resources or not stored_actions:
+        raise HTTPException(status_code=400, detail="Faltan procesos, recursos o acciones cargadas.")
+
+    simulator = MutexSimulator(stored_processes, stored_resources, stored_actions)
+    simulator.simulate()
+    timeline = simulator.get_timeline()
+    return {
+        "message": "Simulación Mutex completada.",
+        "timeline": timeline
+    }
+
+@router.post("/simulation-b/run-semaphore")
+async def run_semaphore_simulation():
+    if not stored_processes or not stored_resources or not stored_actions:
+        raise HTTPException(status_code=400, detail="Faltan procesos, recursos o acciones cargadas.")
+
+    simulator = SemaphoreSimulator(stored_processes, stored_resources, stored_actions)
+    simulator.simulate()
+    timeline = simulator.get_timeline()
+    return {
+        "message": "Simulación Semáforo completada.",
+        "timeline": timeline
+    }
