@@ -86,5 +86,3 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFileUpload, resetSignal }) =>
 };
 
 export default FileUpload;
-
-// Empecemos primero por el backend. Para hacer los endpoints de esta simulación vamos a usar el archivo de sync.py. También tengo mi carpeta sync_mech donde voy a poner la funcionalidad de los mecanismos de sincronización. Y también tengo el file_loader.py donde tengo la función para cargar los procesos, pero tambien haz la que cargue los otros archivos de texto. 

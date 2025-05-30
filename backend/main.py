@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from routers import scheduling
+from routers import sync
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
@@ -14,3 +15,4 @@ app.add_middleware(
 )
 
 app.include_router(scheduling.router, prefix="/api")
+app.include_router(sync.router, prefix="/api")
