@@ -34,3 +34,18 @@
   background-color: #f2f2f2;
   font-weight: bold;
 }
+
+.cell2, .headerCell2 {
+  width: 100px;
+  height: 40px;
+  border: 1px solid #ddd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+}
+
+.headerCell2 {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
